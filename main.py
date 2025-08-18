@@ -73,7 +73,7 @@ async def get_youtube_summary(request: YouTubeUrlRequest):
     try:
         # 1. 자막 추출
         script_extractor = ScriptExtractor(request.youtube_url)
-        script = script_extractor.extract_script()
+        script = await script_extractor.extract_script()
         
         if not script or script.startswith("자막을 불러올 수 없습니다"):
             return YouTubeSummaryResponse(
