@@ -1,0 +1,12 @@
+youtube-transcript-api
+
+# FastAPI 관련 패키지
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+
+# AI/ML 관련 패키지
+google-genai>=1.27.0
+pydantic==2.10.3
+
+# 환경 설정 관련 패키지
+python-dotenv==1.0.1
