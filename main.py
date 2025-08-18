@@ -23,6 +23,7 @@ app = FastAPI()
 # CORS 설정
 ALLOWED_ORIGINS = [
     "https://quizbot-yqez.onrender.com",  # <<<<< 배포된 프론트엔드 페이지 넣기
+    "https://amazing-caramel-93bea7.netlify.app",
     "http://127.0.0.1:5500",                     # 로컬 Live Server
     "http://localhost:5500",                     # 로컬 개발 환경
 ]
