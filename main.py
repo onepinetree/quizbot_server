@@ -22,7 +22,7 @@ app = FastAPI()
 ### 새로 설정한 부분 시작
 # CORS 설정
 ALLOWED_ORIGINS = [
-    "https://good-picker-ut-tool.onrender.com",  # <<<<< 배포된 프론트엔드 페이지 넣기
+    "https://quizbot-yqez.onrender.com",  # <<<<< 배포된 프론트엔드 페이지 넣기
     "http://127.0.0.1:5500",                     # 로컬 Live Server
     "http://localhost:5500",                     # 로컬 개발 환경
 ]
