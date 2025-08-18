@@ -1,4 +1,5 @@
 from youtube_transcript_api import YouTubeTranscriptApi
+import asyncio
 
 class ScriptExtractor:
     def __init__(self, url: str):
@@ -20,12 +21,13 @@ class ScriptExtractor:
         else:
             raise ValueError("올바른 유튜브 URL을 넣어주세요.")
 
-    def _fetch_transcript(self) -> list:
+    async def _fetch_transcript(self) -> list:
         """
-        자막 데이터를 가져오는 private method
+        자막 데이터를 가져오는 private method (비동기)
         """
         try:
-            fetched_transcript = self._youtube_transcript_api.fetch(
+            fetched_transcript = await asyncio.to_thread(
+                self._youtube_transcript_api.fetch,
                 self._video_id, 
                 languages=self._languages
             )
@@ -54,15 +56,15 @@ class ScriptExtractor:
         """
         return self._error_message.format(str(error))
 
-    def extract_script(self) -> str:
+    async def extract_script(self) -> str:
         """
-        유튜브 영상에서 자막을 추출하는 public method
+        유튜브 영상에서 자막을 추출하는 public method (비동기)
         
         Returns:
             str: 추출된 자막 텍스트
         """
         try:
-            transcript_data = self._fetch_transcript()
+            transcript_data = await self._fetch_transcript()
             return self._process_transcript(transcript_data)
             
         except Exception as e:
@@ -70,13 +72,16 @@ class ScriptExtractor:
 
 
 if __name__ == "__main__":
-    # 테스트 실행
-    youtube_url = "https://www.youtube.com/watch?v=ozW7y-y6Ymw"
+    # 테스트 실행 (비동기)
+    async def main():
+        youtube_url = "https://www.youtube.com/watch?v=ozW7y-y6Ymw"
+        
+        # ScriptExtractor 인스턴스 생성
+        extractor = ScriptExtractor(youtube_url)
+        
+        # 자막 추출
+        script = await extractor.extract_script()
+        print("추출된 자막:")
+        print(script)
     
-    # ScriptExtractor 인스턴스 생성
-    extractor = ScriptExtractor(youtube_url)
-    
-    # 자막 추출
-    script = extractor.extract_script()
-    print("추출된 자막:")
-    print(script)
+    asyncio.run(main())
