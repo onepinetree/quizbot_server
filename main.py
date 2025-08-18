@@ -23,7 +23,6 @@ app = FastAPI()
 # CORS 설정
 ALLOWED_ORIGINS = [
     "https://quizbot-yqez.onrender.com",  # <<<<< 배포된 프론트엔드 페이지 넣기
-    "https://amazing-caramel-93bea7.netlify.app",
     "http://127.0.0.1:5500",                     # 로컬 Live Server
     "http://localhost:5500",                     # 로컬 개발 환경
 ]
@@ -71,9 +70,11 @@ async def get_youtube_summary(request: YouTubeUrlRequest):
     유튜브 URL을 받아서 자막을 추출하고 요약을 생성하는 API
     """
     try:
-        # 1. 자막 추출
+        # 1. 자막 추출 (비동기)
+        logger.info(f"자막 추출 시작: {request.youtube_url}")
         script_extractor = ScriptExtractor(request.youtube_url)
         script = await script_extractor.extract_script()
+        logger.info(f"자막 추출 완료: {script}")
         
         if not script or script.startswith("자막을 불러올 수 없습니다"):
             return YouTubeSummaryResponse(
