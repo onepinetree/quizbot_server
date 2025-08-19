@@ -1,4 +1,5 @@
 from youtube_transcript_api import YouTubeTranscriptApi
+from youtube_transcript_api.proxies import WebshareProxyConfig
 import asyncio
 import logging
 
@@ -9,7 +10,17 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(level
 class ScriptExtractor:
     def __init__(self, url: str):
         logger.info(f"ScriptExtractor 초기화 시작 - URL: {url}")
-        self._youtube_transcript_api = YouTubeTranscriptApi()
+        
+        # Webshare 프록시 설정
+        proxy_config = WebshareProxyConfig(
+            proxy_username="auvuympl",
+            proxy_password="cywxjxsjhr8a",
+            filter_ip_locations=["de", "us"],
+        )
+        
+        self._youtube_transcript_api = YouTubeTranscriptApi(proxy_config=proxy_config)
+        logger.info("Webshare 프록시 설정으로 YouTubeTranscriptApi 초기화 완료")
+        
         self._video_id = self._get_video_id(url)
         self._languages = ['ko', 'en']
         self._error_message = "자막을 불러올 수 없습니다: {}"
@@ -105,3 +116,28 @@ class ScriptExtractor:
         except Exception as e:
             logger.error(f"자막 추출 프로세스 실패 - 오류: {str(e)}")
             return self._handle_error(e)
+
+
+if __name__ == "__main__":
+    # 테스트 실행 (비동기)
+    async def main():
+        logger.info("=== ScriptExtractor 테스트 시작 ===")
+        youtube_url = "https://www.youtube.com/watch?v=ozW7y-y6Ymw"
+        
+        # ScriptExtractor 인스턴스 생성
+        extractor = ScriptExtractor(youtube_url)
+        
+        # 자막 추출
+        script = await extractor.extract_script()
+        print("추출된 자막:")
+        print(script)
+        logger.info("=== ScriptExtractor 테스트 완료 ===")
+    
+    # 이미 실행 중인 이벤트 루프가 있는 경우 대비
+    try:
+        asyncio.run(main())
+    except RuntimeError:
+        # Jupyter 노트북 등에서 실행할 때
+        import nest_asyncio
+        nest_asyncio.apply()
+        asyncio.run(main())
