@@ -59,20 +59,13 @@ class SummaryGenerator:
                 logger.info("Gemini API 응답 수신 성공")
                 logger.debug(f"API 응답 원본: {response.text[:200]}...")
 
-                result = json.loads(response.text)
-                logger.info(f"JSON 파싱 성공 - 결과 타입: {type(result)}")
+                # Gemini API는 일반적으로 텍스트로 응답하므로 바로 사용
+                result = response.text.strip()
+                logger.info(f"응답 처리 성공 - 결과 길이: {len(result)} 문자")
 
                 return SummaryGeneratorResponse(
                     response_status='success',
                     result=result
-                )
-
-            except json.JSONDecodeError as e:
-                logger.error(f"JSON 파싱 오류 - 응답을 문자열로 처리: {str(e)}")
-                # JSON 파싱 실패 시 텍스트 그대로 반환
-                return SummaryGeneratorResponse(
-                    response_status='success',
-                    result=response.text if 'response' in locals() else "응답 파싱 실패"
                 )
 
             except Exception as e:
@@ -90,4 +83,3 @@ class SummaryGenerator:
                         result='요약 생성 실패',
                         exception_message=f'gemini_api_error, {e}',
                     )
-
